@@ -9,48 +9,85 @@ Manages parking lot ticketing system.
 ### Set up
 * Clone the repo
 * Create a virtual environment and activate it. This is optional, as no third-party dependencies as of yet.
-    ```bash
-    cd tickets
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+```bash
+cd tickets
+python3 -m venv venv
+source venv/bin/activate
+```
 ## Usage
-Once inside the repo
+The program can accept input from many different sources on the command line. All of the following will work.
 
 ```bash
-python3 -m tickets <commands-file>
+# filename arguments
+python -m tickets commands_1.txt commands_2.txt ...
+
+# input redirection
+python -m tickets < commands.txt
+
+# piping from another command
+cat commands.txt | python -m tickets
+
+# read from stdin
+python -m tickets
 ```
 
-### Example
-Let `commands.txt` be a text file that contains the inputs as below:
-```
-Create_parking_lot 6
-Park KA-01-HH-1234 driver_age 21
-Park PB-01-HH-1234 driver_age 21
-Slot_numbers_for_driver_of_age 21
-Park PB-01-TG-2341 driver_age 40
-Slot_number_for_car_with_number PB-01-HH-1234
-Leave 2
-Park HR-29-TG-3098 driver_age 39
-Vehicle_registration_number_for_driver_of_age 21
-```
+The program reads and processes inputs line by line and produces one line per input line.
 
-Running the following
+If there is some issue with a line, the output will be as follows:
+
+A sample session is shown below
 
 ```bash
-python3 -m tickets commands.txt
+python3 -m tickets
+
+create_parking_lot 2
+Created parking of 2 slots
+leave 2
+ERROR: slot 2 is empty
+park xxx 
+ERROR: invalid usage for command 'park'
+park xxx driver_age 12
+Car with vehicle registration number "xxx" has been parked at slot number 1
+park yyy driver_age 14
+Car with vehicle registration number "yyy" has been parked at slot number 2
+leave 1
+Slot number 1 vacated, the car with vehicle registration number "xxx" left the space, the driver of the car was of age 12
+park zzz driver_age 15
 ```
 
-produces the following output
+## Test Coverage
 
-```
-Created parking of 6 slots
-Car with vehicle registration number "KA-01-HH-1234" has been parked at slot number 1
-Car with vehicle registration number "PB-01-HH-1234" has been parked at slot number 2
-1, 2
-Car with vehicle registration number "PB-01-TG-2341" has been parked at slot number 3
-2
-Slot number 2 vacated, the car with vehicle registration number "PB-01-HH-1234" left the space, the driver of the car was of age 21
-Car with vehicle registration number "HR-29-TG-3098" has been parked at slot number 2
-KA-01-HH-1234, HR-29-TG-3098
-```
+* To run all the tests
+    
+    ```
+    python3 -m unittest tests/test_*
+    ```
+
+* Current test coverage report
+
+    ```Name                   Stmts   Miss  Cover
+    ------------------------------------------
+    tests/test_cmds.py        15      0   100%
+    tests/test_main.py        11      0   100%
+    tests/test_models.py      72      0   100%
+    tests/test_views.py       20      0   100%
+    tickets/__init__.py        0      0   100%
+    tickets/__main__.py       28      4    86%
+    tickets/cmds.py           14      0   100%
+    tickets/models.py         40      0   100%
+    tickets/views.py          12      0   100%
+    ------------------------------------------
+    TOTAL                    212      4    98%
+    ```
+
+## Design
+* The implementaion follows functional programming principles of minimizing and localizing IO and maximizing pure functions.
+
+    > The `__main__` module take an input stream, processes it and produces to stdout. The processing code constitues majority (98%, as evident from the above coverage report) of the whole code; it consists of pure functions and is fully tested.
+
+* The various opearations performed by the core code are O(1). These include:
+    
+    * finding the next available slot closest to the entrance (by using a heap)
+    * aggregations based on age, car registration number (by maintaining in-memory indices)
+
+    > The implementaion trades space efficiency for better performance. The heap and the indices will take more space but all required operations are O(1)
