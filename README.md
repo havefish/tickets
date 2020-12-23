@@ -4,11 +4,14 @@ Manages parking lot ticketing system.
 ## Set up
 * Clone the repo
 * Create a virtual environment and activate it. This is optional, as no third-party dependencies as of yet.
+
 ```bash
+git clone https://github.com/havefish/tickets.git
 cd tickets
 python3 -m venv venv
 source venv/bin/activate
 ```
+
 ## Usage
 The program can accept input from many different sources on the command line. All of the following will work.
 
