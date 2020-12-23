@@ -1,43 +1,43 @@
-import sys
-from pathlib import Path
+import fileinput
 
 from . import cmds, models, views
 
 
-def parse(lines):
-    if not lines:
-        raise Exception('no commands to execute')
-
-    commands = [cmds.parse(line) for line in lines]
-
-    assert commands[0]['cmd'] == 'create_parking_lot', 'cannot perform {cmd!r} before creating parking lot'.format_map(commands[0])
-    return commands
+def process(lot, line):
+    cmd = cmds.parse(line)
+    r = getattr(lot, cmd['model_func'])(*cmd['model_args'])
+    return getattr(views, cmd['view_func'])(r)
 
 
-def process(commands):
-    lot = models.ParkingLot(*commands[0]['model_args'])
-    yield getattr(views, commands[0]['view_func'])(*commands[0]['model_args'])
+def process_lines(lines):
+    lines = iter(lines)
 
-    for command in commands[1:]:
-        r = getattr(lot, command['model_func'])(*command['model_args'])
-        yield getattr(views, command['view_func'])(r)
+    # the first line must be to create_parking_lot
+    while True:
+        try:
+            line = next(lines)
+            cmd = cmds.parse(line)
+            assert cmd['cmd'] == 'create_parking_lot', 'cannot perform {cmd!r} before creating parking lot'.format_map(cmd)
+        except Exception as e:
+            yield f'ERROR: {e}'
+        else:
+            break
+
+    lot = models.ParkingLot(*cmd['model_args'])
+    output = getattr(views, cmd['view_func'])(*cmd['model_args'])
+    yield output
+
+    # process next lines
+    for line in lines:
+        try:
+           yield process(lot, line)
+        except Exception as e:
+           yield f'ERROR: {e}'
 
 
 def main():
-    try:
-        path = sys.argv[1]
-    except IndexError:
-        raise SystemExit('Provide a commands file.')
-
-    path = Path(path).resolve()
-    if not path.exists():
-        raise Exception(f'commands file {path!r} does not exist as expected')
-
-    input_lines = path.read_text().strip().splitlines()
-    output_lines = process(input_lines)
-
-    for line in output_lines:
-        print(line)
+    for output in process_lines(fileinput.input()):
+        print(output)
 
 
 if __name__ == '__main__':
