@@ -44,7 +44,11 @@ CMDS = {
 
 def parse(line):
     word = line.strip().lower().split()[0]
-    cmd = CMDS[word]
+
+    try:
+        cmd = CMDS[word]
+    except KeyError:
+        raise Exception(f'invalid command {word!r}')
 
     match = cmd['pattern'].match(line)
 
