@@ -1,7 +1,7 @@
 # Tickets
 Manages parking lot ticketing system.
 
-# Install
+## Install
 ### System Requirements
 * Python 3.6+
 * Works on any operating system
@@ -44,6 +44,7 @@ python3 -m tickets commands.txt
 produces the following output
 
 ```
+Created parking of 6 slots
 Car with vehicle registration number "KA-01-HH-1234" has been parked at slot number 1
 Car with vehicle registration number "PB-01-HH-1234" has been parked at slot number 2
 1, 2
