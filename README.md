@@ -34,6 +34,8 @@ A sample session is shown below
 ```bash
 python3 -m tickets
 
+leave 2
+ERROR: cannot perform 'leave' before creating parking lot
 create_parking_lot 2
 Created parking of 2 slots
 leave 2
