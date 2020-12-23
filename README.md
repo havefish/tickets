@@ -1,12 +1,7 @@
 # Tickets
 Manages parking lot ticketing system.
 
-## Install
-### System Requirements
-* Python 3.6+
-* Works on any operating system
-* Has no third-party dependencies
-### Set up
+## Set up
 * Clone the repo
 * Create a virtual environment and activate it. This is optional, as no third-party dependencies as of yet.
 ```bash
@@ -31,9 +26,8 @@ cat commands.txt | python -m tickets
 python -m tickets
 ```
 
-The program reads and processes inputs line by line and produces one line per input line.
-
-If there is some issue with a line, the output will be as follows:
+The program reads and processes inputs line by line and produces one line per input line. 
+If there is an error with a certain line, the output will be of the format `ERROR: <reason>`, then the code moves on to process further lines.
 
 A sample session is shown below
 
@@ -81,13 +75,22 @@ park zzz driver_age 15
     ```
 
 ## Design
-* The implementaion follows functional programming principles of minimizing and localizing IO and maximizing pure functions.
+* The implementaion follows functional programming principles of localizing IO to the broundary of the system and maximizing the number of pure functions.
 
     > The `__main__` module take an input stream, processes it and produces to stdout. The processing code constitues majority (98%, as evident from the above coverage report) of the whole code; it consists of pure functions and is fully tested.
 
-* The various opearations performed by the core code are O(1). These include:
+* The implementaion trades space efficiency for better performance; it will take comparatively more memory but all required operations are O(1):
     
     * finding the next available slot closest to the entrance (by using a heap)
     * aggregations based on age, car registration number (by maintaining in-memory indices)
 
-    > The implementaion trades space efficiency for better performance. The heap and the indices will take more space but all required operations are O(1)
+* The code is easily extensible. Adding one more command involves the following:
+    * add an entry to `cmds.CMDS` dict
+    * add a method in the `models.ParkingLot` class
+    * add a corresponding view function in `views.py`
+    * the plumbing is already taken care of.
+
+## System Requirements
+* Python 3.6+
+* Works on any operating system
+* Has no third-party dependencies
