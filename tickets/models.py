@@ -5,8 +5,11 @@ Car = namedtuple('Car', ['id', 'age', 'slot'])
 
 class ParkingLot:
     def __init__(self, capacity):
-        self.capacity = int(capacity)
-        assert self.capacity > 0, 'capacity must be > 0'
+        try:
+            self.capacity = int(capacity)
+            assert self.capacity > 0
+        except Exception:
+            raise ValueError('capacity must be > 0')
         
         # make finding next availble slot O(1) with a heap
         self.available = list(range(1, self.capacity+1))
@@ -21,7 +24,7 @@ class ParkingLot:
                 
     def park(self, id, age):
         if id in self.cars:
-            return self.cars[id]
+            return self.slots[self.cars[id]]
         
         if not self.available:
             raise Exception('no slots available')
@@ -41,7 +44,7 @@ class ParkingLot:
         car = self.slots[slot]
         
         if car is None:
-            return
+            raise Exception(f'slot {slot} is empty')
         
         # update indices
         del self.cars[car.id]
@@ -57,5 +60,5 @@ class ParkingLot:
     def find_slots_for_age(self, age):
         return list(self.ages.get(age, []))
     
-    def find_slot_for_car(self, car):
-        return self.cars.get(car)
+    def find_slot_for_car(self, id):
+        return self.cars.get(id)
