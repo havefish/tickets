@@ -4,17 +4,23 @@ from pathlib import Path
 from . import cmds, models, views
 
 
-def process(lines):
-    cmd = cmds.parse(lines[0])
-    assert cmd['cmd'] == 'create_parking_lot', 'cannot {cmd!r} before creating the parking lot'.format_map(cmd)
+def parse(lines):
+    if not lines:
+        raise Exception('no commands to execute')
 
-    lot = models.ParkingLot(*cmd['model_args'])
-    yield getattr(views, cmd['view_func'])(*cmd['model_args'])
+    commands = [cmds.parse(line) for line in lines]
 
-    for line in lines[1:]:
-        cmd = cmds.parse(line)
-        r = getattr(lot, cmd['model_func'])(*cmd['model_args'])
-        yield getattr(views, cmd['view_func'])(r)
+    assert commands[0]['cmd'] == 'create_parking_lot', 'cannot perform {cmd!r} before creating parking lot'.format_map(commands[0])
+    return commands
+
+
+def process(commands):
+    lot = models.ParkingLot(*commands[0]['model_args'])
+    yield getattr(views, commands[0]['view_func'])(*commands[0]['model_args'])
+
+    for command in commands[1:]:
+        r = getattr(lot, command['model_func'])(*command['model_args'])
+        yield getattr(views, command['view_func'])(r)
 
 
 def main():

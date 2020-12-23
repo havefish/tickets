@@ -51,6 +51,8 @@ def parse(line):
         raise Exception(f'invalid command {word!r}')
 
     match = cmd['pattern'].match(line)
+    if match is None:
+        raise Exception(f'invalid usage for command {word!r}')
 
     transforms = cmd['transforms']
     args = [t(a) for t, a in zip(transforms, match.groups())]

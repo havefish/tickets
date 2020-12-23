@@ -15,8 +15,14 @@ class TestCmds(unittest.TestCase):
             {**cmds.CMDS['create_parking_lot'], 'cmd': 'create_parking_lot', 'model_args': [6]},
         )
 
-    def test_parse_invalid_line(self):
+    def test_parse_invalid_commad(self):
         with self.assertRaises(Exception) as c:
             cmds.parse('foo 1')
 
         self.assertEqual(str(c.exception), "invalid command 'foo'")
+
+    def test_parse_invalid_usage_valid_command(self):
+        with self.assertRaises(Exception) as c:
+            cmds.parse('park xxx')
+
+        self.assertEqual(str(c.exception), "invalid usage for command 'park'")
