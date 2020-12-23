@@ -42,7 +42,12 @@ CMDS = {
     },
 }
 
-def parse(line):
+def parse(line: str) -> dict:
+    """Parses an input line and returns the resultsa dict
+
+    Raises:
+        Exception: if the command is not valid or the usage is not valid.
+    """
     word = line.strip().lower().split()[0]
 
     try:
