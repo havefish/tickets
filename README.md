@@ -88,6 +88,8 @@ park zzz driver_age 15
 * The implementaion follows functional programming principles of localizing IO to the broundary of the system and maximizing the number of pure functions.
 
     The `__main__` module take an input stream, processes it and produces to stdout. The processing code constitues majority (98%, as evident from the above coverage report) of the whole code; it consists of pure functions and is fully tested.
+    
+* Changing the user interface from the command line to a web-based system or something else is straight forward. The core remains same and the UI acts as a plugin, this way this conforms to the [Principles of Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
 * The implementaion trades space efficiency for better performance; it will take comparatively more memory but all required operations are O(1):
     
@@ -99,3 +101,5 @@ park zzz driver_age 15
     * add a method in the `models.ParkingLot` class
     * add a corresponding view function in `views.py`
     * the plumbing is already taken care of.
+    
+ 
