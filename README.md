@@ -1,6 +1,11 @@
 # Tickets
 Manages parking lot ticketing system.
 
+## System Requirements
+* Python 3.6+
+* Works on any unix like operating systems
+* Has no third-party dependencies
+
 ## Set up
 * Clone the repo
 * Create a virtual environment and activate it. This is optional, as no third-party dependencies as of yet.
@@ -17,16 +22,16 @@ The program can accept input from many different sources on the command line. Al
 
 ```bash
 # filename arguments
-python -m tickets commands_1.txt commands_2.txt ...
+python3 -m tickets commands_1.txt commands_2.txt ...
 
 # input redirection
-python -m tickets < commands.txt
+python3 -m tickets < commands.txt
 
 # piping from another command
-cat commands.txt | python -m tickets
+cat commands.txt | python3 -m tickets
 
 # read from stdin
-python -m tickets
+python3 -m tickets
 ```
 
 The program reads and processes inputs line by line and produces one line per input line. 
@@ -94,8 +99,3 @@ park zzz driver_age 15
     * add a method in the `models.ParkingLot` class
     * add a corresponding view function in `views.py`
     * the plumbing is already taken care of.
-
-## System Requirements
-* Python 3.6+
-* Works on any operating system
-* Has no third-party dependencies
