@@ -3,9 +3,9 @@
 Two entities are defined
 1. Car: a struct containsing the following fields
 
-    i. id: str -- registration number of the car
-    ii. age: int -- age of the driver
-    iii. slot: int -- alloted slot
+    * id: str -- registration number of the car
+    * age: int -- age of the driver
+    * slot: int -- alloted slot
 
 2. ParkingLot: a class the objects of which use the Car objects
 

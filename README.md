@@ -87,12 +87,13 @@ park zzz driver_age 15
 ## Design
 * The implementaion follows functional programming principles of localizing IO to the broundary of the system and maximizing the number of pure functions.
 
-    The `__main__` module take an input stream, processes it and produces to stdout. The processing code constitues majority (98%, as evident from the above coverage report) of the whole code; it consists of pure functions and is fully tested.
+    The `__main__` module take an input stream, processes it and produces to stdout. The processing code constitues majority (98%, as evident from the above coverage report) of the whole code; it consists of mainly pure functions and is fully tested.
 
-* The implementaion trades space efficiency for better performance; it will take comparatively more memory but all required operations are O(1):
+* The implementaion trades space efficiency for better performance; it will take comparatively more memory but all required operations are O(1) or O(logN), where N is the number of slots:
     
-    * finding the next available slot closest to the entrance (by using a heap)
-    * aggregations based on age, car registration number (by maintaining in-memory indices)
+    * finding the next available slot closest to the entrance are O(1) due to heap
+    * parking and leaving are O(logN) due to heap
+    * aggregations based on age, car registration number are O(1) due to in-memory indices
 
 * The code is easily extensible. Adding one more command involves the following:
     * add an entry to `cmds.CMDS` dict
